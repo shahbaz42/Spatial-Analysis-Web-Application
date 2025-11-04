@@ -1,6 +1,6 @@
 # Solar Site Analyzer API
 
-A production-grade FastAPI backend for analyzing and managing solar panel installation site suitability with MySQL database.
+A FastAPI backend for analyzing and managing solar panel installation site suitability with MySQL database.
 
 ## Features
 
@@ -11,6 +11,8 @@ A production-grade FastAPI backend for analyzing and managing solar panel instal
 - **Async Database Operations** - High-performance async I/O
 - **Production-Ready** - Proper error handling, validation, and logging
 - **Auto-Generated Documentation** - Interactive API docs with Swagger UI
+- **Redis Caching** - Cache responses for faster access
+- **Docker Support** - Containerized development and deployment
 
 ## Architecture
 
@@ -19,6 +21,7 @@ backend/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py              # FastAPI application entry point
+│   ├── cache.py             # Cache management
 │   ├── config.py            # Configuration management
 │   ├── database.py          # Database connection and session management
 │   ├── models/
@@ -63,7 +66,77 @@ backend/
 - **GET /api/export** - Export filtered results
   - Query params: `format` (csv/json), `min_score`
 
-## Setup Instructions
+
+## Quick Start
+## Option 1: Local Development Setup (Recommended for Development)
+
+### Step 1: Set up MySQL Database
+
+```bash
+# Login to MySQL
+mysql -u root -p
+
+# Run the schema script
+source databaseschema.sql
+```
+
+### Step 2: Set up Python Environment
+
+```bash
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Step 3: Configure Environment
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your credentials
+nano .env
+```
+
+Update these values:
+```
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+```
+
+### Step 4: Initialize Database with Data
+
+```bash
+# Run the initialization script
+python scripts/init_database.py
+```
+
+This will:
+- Load all 50 sites from data.csv
+- Calculate initial suitability scores
+- Set up the database completely
+
+### Step 5: Start the API Server
+
+```bash
+# Development mode with auto-reload
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### Step 6: Access the API
+
+Open your browser:
+- **API Docs (Swagger)**: http://localhost:8000/docs
+- **Alternative Docs (ReDoc)**: http://localhost:8000/redoc
+- **API Root**: http://localhost:8000
+
+---
+
+
+## Development Setup Instructions
 
 ### 1. Prerequisites
 
@@ -148,60 +221,6 @@ The API will be available at:
 - **Interactive Docs**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-## Usage Examples
-
-### 1. Get All Sites
-
-```bash
-curl http://localhost:8000/api/sites?limit=10
-```
-
-### 2. Get Sites with Score Filter
-
-```bash
-curl http://localhost:8000/api/sites?min_score=70&max_score=100
-```
-
-### 3. Get Specific Site Details
-
-```bash
-curl http://localhost:8000/api/sites/1
-```
-
-### 4. Recalculate with Custom Weights
-
-```bash
-curl -X POST http://localhost:8000/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{
-    "weights": {
-      "solar": 0.4,
-      "area": 0.3,
-      "grid_distance": 0.15,
-      "slope": 0.1,
-      "infrastructure": 0.05
-    }
-  }'
-```
-
-### 5. Get Statistics
-
-```bash
-curl http://localhost:8000/api/statistics
-```
-
-### 6. Export as CSV
-
-```bash
-curl http://localhost:8000/api/export?format=csv&min_score=60 > sites.csv
-```
-
-### 7. Export as JSON
-
-```bash
-curl http://localhost:8000/api/export?format=json&min_score=60 > sites.json
-```
-
 ## Analysis Formula
 
 The suitability score (0-100) is calculated using:
@@ -251,6 +270,25 @@ Total Score = (
    - Linear inverse relationship
 
 ## Development
+
+### Design Patterns
+
+**1. Layered Architecture**:
+- **Router Layer**: HTTP request/response handling
+- **Service Layer**: Business logic and calculations
+- **Database Layer**: Data access and persistence
+
+**2. Dependency Injection**:
+- Database sessions injected via `Depends(get_db)`
+- Settings injected via `get_settings()`
+
+**3. Async/Await**:
+- Fully async database operations
+- Non-blocking I/O for high performance
+
+**4. Configuration Management**:
+- Environment-based configuration
+- Settings cached with `@lru_cache()`
 
 ### Code Quality
 

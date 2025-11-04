@@ -23,6 +23,23 @@ services:
       timeout: 5s
       retries: 5
 
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: solar_analyzer_redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - solar_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
   # FastAPI Application
   api:
     build: .
@@ -33,11 +50,18 @@ services:
       DB_USER: ${DB_USER:-solaruser}
       DB_PASSWORD: ${DB_PASSWORD:-solarpassword}
       DB_NAME: ${DB_NAME:-solar_site_analyzer}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      REDIS_ENABLED: ${REDIS_ENABLED:-True}
+      REDIS_TTL: ${REDIS_TTL:-300}
       DEBUG: ${DEBUG:-False}
     ports:
       - "8000:8000"
     depends_on:
       mysql:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - solar_network
@@ -47,6 +71,8 @@ services:
 
 volumes:
   mysql_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:
