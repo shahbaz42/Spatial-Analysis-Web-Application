@@ -7,6 +7,7 @@ from typing import Optional
 from app.database import get_db
 from app.services.site_service import SiteService
 from app.models.schemas import SiteListResponse, SiteDetailResponse
+from app.cache import CacheManager
 
 router = APIRouter(prefix="/sites", tags=["Sites"])
 
@@ -62,6 +63,20 @@ async def get_sites(
             detail="min_score cannot be greater than max_score"
         )
     
+    # Generate cache key
+    cache_key = CacheManager.generate_cache_key(
+        "sites_list",
+        min_score=min_score,
+        max_score=max_score,
+        limit=limit,
+        offset=offset
+    )
+    
+    # Try cache first
+    cached_result = await CacheManager.get(cache_key)
+    if cached_result:
+        return cached_result
+    
     try:
         result = await SiteService.get_sites(
             db=db,
@@ -70,6 +85,10 @@ async def get_sites(
             limit=limit,
             offset=offset
         )
+        
+        # Cache the result
+        await CacheManager.set(cache_key, result)
+        
         return result
     except Exception as e:
         raise HTTPException(
@@ -101,6 +120,14 @@ async def get_site_by_id(
         - Total suitability score
         - Analysis timestamp
     """
+    # Generate cache key
+    cache_key = CacheManager.generate_cache_key("site_detail", site_id=site_id)
+    
+    # Try cache first
+    cached_result = await CacheManager.get(cache_key)
+    if cached_result:
+        return cached_result
+    
     try:
         site = await SiteService.get_site_by_id(db=db, site_id=site_id)
         
@@ -109,6 +136,9 @@ async def get_site_by_id(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Site with ID {site_id} not found"
             )
+        
+        # Cache the result
+        await CacheManager.set(cache_key, site)
         
         return site
     except HTTPException:

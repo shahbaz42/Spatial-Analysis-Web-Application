@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 
 from app.config import get_settings
 from app.database import close_db
+from app.cache import CacheManager
 from app.routers import sites_router, analysis_router, export_router
 
 settings = get_settings()
@@ -20,11 +21,18 @@ async def lifespan(app: FastAPI):
     print("Starting Solar Site Analyzer API...")
     print(f"Database: {settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}")
     
+    # Initialize Redis cache
+    if settings.REDIS_ENABLED:
+        await CacheManager.init_redis()
+    else:
+        print("Redis caching is disabled")
+    
     yield
     
     # Shutdown
     print("Shutting down Solar Site Analyzer API...")
     await close_db()
+    await CacheManager.close_redis()
 
 
 # Create FastAPI application

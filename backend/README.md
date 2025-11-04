@@ -330,6 +330,18 @@ All errors return JSON with details:
   "detail": "Error message description"
 }
 ```
+## Redis Caching
+This application implements Redis caching to improve API performance by reducing database queries and computation overhead. The caching layer is designed to be transparent, fault-tolerant, and easy to manage.
+
+The following API endpoints implement Redis caching:
+
+| Endpoint | Cache Prefix | TTL | Invalidated By |
+|----------|-------------|-----|----------------|
+| `GET /api/sites` | `sites_list` | 300s | POST /api/analyze |
+| `GET /api/sites/{id}` | `site_detail` | 300s | POST /api/analyze |
+| `GET /api/statistics` | `statistics` | 300s | POST /api/analyze |
+| `GET /api/export` | `export_data` | 300s | POST /api/analyze |
+
 
 ## License
 

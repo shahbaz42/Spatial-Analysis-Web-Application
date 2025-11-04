@@ -8,6 +8,7 @@ from app.database import get_db
 from app.services.analysis_service import AnalysisService
 from app.services.site_service import SiteService
 from app.models.schemas import AnalysisRequest, AnalysisResponse, StatisticsResponse
+from app.cache import CacheManager, invalidate_cache
 
 router = APIRouter(tags=["Analysis"])
 
@@ -52,6 +53,13 @@ async def analyze_with_custom_weights(
             db=db,
             weights=request.weights
         )
+        
+        # Invalidate all cached data since scores have been recalculated
+        await invalidate_cache("sites_list")
+        await invalidate_cache("site_detail")
+        await invalidate_cache("statistics")
+        await invalidate_cache("export_data")
+        
         return result
     except ValueError as e:
         raise HTTPException(
@@ -100,12 +108,28 @@ async def get_statistics(
     - **Land type statistics**: Average and max scores by land type
     - **Top performers**: Top 10 sites by suitability score
     """
+    # Generate cache key
+    cache_key = CacheManager.generate_cache_key(
+        "statistics",
+        min_score=min_score,
+        max_score=max_score
+    )
+    
+    # Try cache first
+    cached_result = await CacheManager.get(cache_key)
+    if cached_result:
+        return cached_result
+    
     try:
         statistics = await SiteService.get_statistics(
             db=db,
             min_score=min_score,
             max_score=max_score
         )
+        
+        # Cache the result
+        await CacheManager.set(cache_key, statistics)
+        
         return statistics
     except Exception as e:
         raise HTTPException(

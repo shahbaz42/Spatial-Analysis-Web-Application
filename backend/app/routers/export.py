@@ -10,6 +10,7 @@ import json
 
 from app.database import get_db
 from app.services.site_service import SiteService
+from app.cache import CacheManager
 
 router = APIRouter(tags=["Export"])
 
@@ -57,12 +58,28 @@ async def export_sites(
     - Total suitability score
     - Analysis timestamp
     """
+    # Generate cache key for the data (not format-specific)
+    cache_key = CacheManager.generate_cache_key(
+        "export_data",
+        min_score=min_score,
+        max_score=max_score
+    )
+    
+    # Try cache first
+    cached_data = await CacheManager.get(cache_key)
+    
     try:
-        sites_data = await SiteService.export_sites(
-            db=db,
-            min_score=min_score,
-            max_score=max_score
-        )
+        if cached_data is None:
+            # Cache miss - fetch from database
+            sites_data = await SiteService.export_sites(
+                db=db,
+                min_score=min_score,
+                max_score=max_score
+            )
+            # Cache the data
+            await CacheManager.set(cache_key, sites_data)
+        else:
+            sites_data = cached_data
         
         if format == "csv":
             return _export_as_csv(sites_data)
