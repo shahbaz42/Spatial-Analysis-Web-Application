@@ -1,23 +1,61 @@
 <template>
-  <aside class="w-80 bg-gray-800 border-r border-gray-700 flex flex-col overflow-hidden">
+  <aside 
+    class="w-80 lg:relative fixed inset-y-0 left-0 z-30 bg-gray-800 border-r border-gray-700 flex flex-col overflow-hidden transition-transform duration-300 lg:translate-x-0"
+    :class="isOpen ? 'translate-x-0' : '-translate-x-full'"
+  >
     <!-- Sidebar Header -->
-    <div class="px-6 py-4 border-b border-gray-700">
-      <h2 class="text-lg font-semibold text-white flex items-center space-x-2">
+    <div class="px-6 py-4 h-20 border-b border-gray-700 flex items-center justify-between">
+      <h2 class="text-md font-semibold text-white flex items-center space-x-2">
         <Sliders class="w-5 h-5" />
         <span>Analysis Controls</span>
       </h2>
+      <!-- Close button (mobile only) -->
+      <button
+        @click="closeSidebar"
+        class="lg:hidden p-2 hover:bg-gray-700 rounded transition-colors"
+      >
+        <X class="w-5 h-5 text-gray-400" />
+      </button>
     </div>
 
     <!-- Scrollable Content -->
-    <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+    <div class="flex-1 overflow-y-auto px-6 py-1 space-y-6">
+      <!-- Filters Section -->
+      <section class="pt-6">
+        <h3 class="text-md font-semibold text-white flex items-center space-x-2">
+          <Filter class="w-4 h-4" />
+          <span>Score Filters</span>
+        </h3>
+
+        <div class="space-y-6 py-6">
+          <RangeSlider
+            label="Score Range"
+            :icon="Target"
+            :min="0"
+            :max="100"
+            :step="1"
+            v-model="scoreRange"
+            color="text-blue-400"
+          />
+
+          <button
+            @click="resetFilters"
+            class="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
+          >
+            <X class="w-4 h-4" />
+            <span>Clear Filters</span>
+          </button>
+        </div>
+      </section>
+
       <!-- Weights Section -->
-      <section>
-        <h3 class="text-sm font-semibold text-gray-300 mb-3 flex items-center space-x-2">
+      <section class="py-4">
+        <h3 class="text-md font-semibold text-white flex items-center space-x-2">
           <Weight class="w-4 h-4" />
           <span>Factor Weights</span>
         </h3>
 
-        <div class="space-y-4">
+        <div class="space-y-4 py-6">
           <WeightSlider
             label="Solar Irradiance"
             :icon="Sun"
@@ -82,41 +120,6 @@
         </div>
       </section>
 
-      <!-- Filters Section -->
-      <section class="pt-6 border-t border-gray-700">
-        <h3 class="text-sm font-semibold text-gray-300 mb-3 flex items-center space-x-2">
-          <Filter class="w-4 h-4" />
-          <span>Score Filters</span>
-        </h3>
-
-        <div class="space-y-4">
-          <RangeSlider
-            label="Score Range"
-            :icon="Sliders"
-            :min="0"
-            :max="100"
-            :step="1"
-            v-model="scoreRange"
-            color="text-blue-400"
-          />
-
-          <button
-            @click="resetFilters"
-            class="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
-          >
-            <X class="w-4 h-4" />
-            <span>Clear Filters</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- Filtered Results Info -->
-      <section class="p-4 bg-gray-700 rounded-lg">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-gray-300">Showing:</span>
-          <span class="font-bold text-white">{{ siteStore.filteredSites.length }} sites</span>
-        </div>
-      </section>
     </div>
   </aside>
 </template>
@@ -135,12 +138,27 @@ import {
   RotateCcw,
   Filter,
   X,
+  Target,
 } from 'lucide-vue-next';
 import { useSiteStore } from '@/stores/siteStore';
 import { DEFAULT_WEIGHTS } from '@/config';
 import WeightSlider from '@/components/WeightSlider.vue';
 import RangeSlider from '@/components/RangeSlider.vue';
 import type { AnalysisWeights } from '@/types';
+
+// Props
+interface Props {
+  isOpen?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isOpen: true,
+});
+
+// Emits
+const emit = defineEmits<{
+  close: [];
+}>();
 
 const siteStore = useSiteStore();
 
@@ -152,6 +170,7 @@ const scoreRange = ref<[number, number]>([
   siteStore.filters.maxScore,
 ]);
 
+// Watch all filter ranges and update store
 watch(scoreRange, (newVal) => {
   siteStore.filters.minScore = newVal[0];
   siteStore.filters.maxScore = newVal[1];
@@ -162,7 +181,11 @@ function resetFilters() {
   scoreRange.value = [siteStore.filters.minScore, siteStore.filters.maxScore];
 }
 
-// Watch store filters and update slider when reset
+function closeSidebar() {
+  emit('close');
+}
+
+// Watch store filters and update sliders when reset externally
 watch(
   () => [siteStore.filters.minScore, siteStore.filters.maxScore],
   ([min, max]) => {

@@ -1,4 +1,3 @@
-```vue
 <template>
   <div>
     <!-- Label and values -->
@@ -8,18 +7,18 @@
         <span>{{ label }}</span>
       </label>
       <span class="text-sm font-medium text-white">
-        {{ modelValue[0].toFixed(2) }} - {{ modelValue[1].toFixed(2) }}
+        {{ formatValue(modelValue[0]) }} - {{ formatValue(modelValue[1]) }}
       </span>
     </div>
 
     <!-- Dual Range Slider Container -->
-    <div class="relative w-full h-2">
+    <div class="relative w-full h-2 py-3">
       <!-- Track Background -->
-      <div class="absolute w-full h-2 bg-gray-700 rounded-lg"></div>
+      <div class="absolute w-full h-1.5 bg-gray-700 rounded-lg"></div>
 
       <!-- Highlighted Active Range -->
       <div
-        class="absolute h-2 bg-blue-500 rounded-lg"
+        class="absolute h-1.5 bg-blue-500 rounded-lg"
         :style="{
           left: `${((modelValue[0] - min) / (max - min)) * 100}%`,
           width: `${((modelValue[1] - modelValue[0]) / (max - min)) * 100}%`,
@@ -94,6 +93,16 @@ const onMaxChange = (event: Event) => {
   }
   emit('update:modelValue', [props.modelValue[0], newMax]);
 };
+
+const formatValue = (value: number): string => {
+  if (value >= 1000) {
+    return new Intl.NumberFormat('en-US').format(Math.round(value));
+  }
+  if (value >= 1) {
+    return value.toFixed(1);
+  }
+  return value.toFixed(2);
+};
 </script>
 
 <style scoped>
@@ -126,7 +135,7 @@ const onMaxChange = (event: Event) => {
   background-color: #3b82f6;
   border-radius: 9999px;
   cursor: pointer;
-  margin-top: -0.99rem;
+  margin-top: -1.05rem;
   pointer-events: all;
 }
 
@@ -142,4 +151,3 @@ const onMaxChange = (event: Event) => {
   margin-top: -0.25rem;
 }
 </style>
-```

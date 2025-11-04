@@ -1,7 +1,7 @@
 <template>
-  <header class="bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center space-x-3">
-      <Sun class="w-8 h-8 text-primary-500" />
+  <header class="bg-gray-800 h-20 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-5">
+      <Sun class="w-6 h-6 text-primary-500" />
       <div>
         <h1 class="text-2xl font-bold text-white">Solar Site Analyzer</h1>
         <p class="text-sm text-gray-400">Identify optimal locations for solar installations</p>
