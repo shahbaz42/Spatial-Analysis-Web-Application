@@ -38,6 +38,13 @@ A comprehensive full-stack application for analyzing and managing solar panel in
 4. Docker containerization                                ✅ 
 5. Unit tests for critical functions                      ✅ 
 
+## 📚 Documentation
+
+- **API Documentation**: Auto-generated Swagger UI at `/docs`
+- **Docker Guide**: [README_DOCKER.md](./README_DOCKER.md)
+- **Backend README**: [backend/README.md](./backend/README.md)
+- **Frontend README**: [frontend/README.md](./frontend/README.md)
+
 ## 🏗️ Architecture
 
 ```
@@ -310,13 +317,6 @@ Cache automatically invalidates on data changes.
 - Health check endpoints
 - Nginx security headers
 - Environment-based secrets
-
-## 📚 Documentation
-
-- **API Documentation**: Auto-generated Swagger UI at `/docs`
-- **Docker Guide**: [README_DOCKER.md](./README_DOCKER.md)
-- **Backend README**: [backend/README.md](./backend/README.md)
-- **Frontend README**: [frontend/README.md](./frontend/README.md)
 
 ## 🧪 Testing
 
