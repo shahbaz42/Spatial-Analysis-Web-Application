@@ -1,6 +1,9 @@
+
 # Solar Site Analyzer
 
 A comprehensive full-stack application for analyzing and managing solar panel installation site suitability using spatial data analysis, machine learning scoring, and interactive visualization.
+
+https://github.com/user-attachments/assets/88327cab-2d2a-472a-8db5-51c90ea5c80f
 
 <img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/c682d798-8206-4ae7-97bb-9ebd1e8054e2" />
 <img width="1920" height="1042" alt="image" src="https://github.com/user-attachments/assets/2c537218-78d0-451f-8188-b95a6ae0fa5a" />
@@ -8,7 +11,6 @@ A comprehensive full-stack application for analyzing and managing solar panel in
 <img width="402" height="877" alt="image" src="https://github.com/user-attachments/assets/948836ad-3f2a-487e-9c30-cae948ea3581" />
 <img width="400" height="872" alt="image" src="https://github.com/user-attachments/assets/19dc63ef-0fe0-44f9-8e65-a8ba839d1b6a" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0603e68a-3453-4932-9193-d402c0795d1e" />
-
 
 ## 🌟 Features
 
