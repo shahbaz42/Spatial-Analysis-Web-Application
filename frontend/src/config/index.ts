@@ -10,7 +10,7 @@ export const DEFAULT_WEIGHTS = {
 };
 
 export const DEFAULT_MAP_CENTER: [number, number] = [78.9629, 20.5937]; // Center of India
-export const DEFAULT_MAP_ZOOM = 5;
+export const DEFAULT_MAP_ZOOM = 3.5;
 
 export const SCORE_COLORS = {
   excellent: '#10b981', // green-500

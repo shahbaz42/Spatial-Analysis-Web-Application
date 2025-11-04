@@ -14,6 +14,7 @@
     <div class="flex-1 flex flex-col relative">
       <!-- Hamburger Menu Button (Mobile) -->
       <button
+        v-if="!sidebarOpen"
         @click="toggleSidebar"
         class="fixed top-4 left-4 z-30 lg:hidden p-2 bg-gray-800 hover:bg-gray-700 rounded-lg shadow-lg transition-colors"
       >
@@ -30,8 +31,8 @@
       
       <!-- Bottom Site Cards -->
       <div class="absolute bottom-0 left-0 right-0 z-20">
-          <BottomSiteBar />
-        </div>
+        <BottomSiteBar />
+      </div>
     </div>
 
     <!-- Loading Overlay -->
@@ -65,7 +66,6 @@ function closeSidebar() {
 }
 
 onMounted(async () => {
-  // Load initial data
   try {
     await Promise.all([
       siteStore.fetchSites({ limit: 100 }),
