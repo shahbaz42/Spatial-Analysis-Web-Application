@@ -118,6 +118,15 @@ class CacheManager:
         
         try:
             ttl = ttl or settings.REDIS_TTL
+            
+            # Convert Pydantic models to dict before serialization
+            if hasattr(value, 'model_dump'):
+                # Pydantic v2
+                value = value.model_dump(mode='json')
+            elif hasattr(value, 'dict'):
+                # Pydantic v1
+                value = value.dict()
+            
             serialized_value = json.dumps(value, default=str)
             await cls._redis_client.setex(key, ttl, serialized_value)
             return True
