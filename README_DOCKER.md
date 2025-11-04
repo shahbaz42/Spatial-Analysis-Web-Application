@@ -21,10 +21,12 @@ cd solar_site_analyzer
 # Create environment file
 cp .env.example .env
 
-# Edit .env and add your Mapbox token (required for map visualization)
+# IMPORTANT: Edit .env and add your Mapbox token (required for map visualization)
+# Get your free token from: https://www.mapbox.com/
 nano .env  # or use your preferred editor
+# Set: VITE_MAPBOX_TOKEN=pk.eyJ1Ijoi...your_token_here
 
-# Start all services
+# Start all services (this will build containers with your token)
 docker-compose up -d
 
 # View logs
@@ -110,13 +112,27 @@ VITE_API_BASE_URL=http://localhost:8000
 VITE_MAPBOX_TOKEN=pk.your_actual_mapbox_token_here
 ```
 
-### Mapbox Token
+### Mapbox Token (Required)
 
 The frontend requires a Mapbox access token for map visualization:
 
-1. Sign up at https://www.mapbox.com/
-2. Create an access token
-3. Add it to `.env` as `VITE_MAPBOX_TOKEN`
+1. **Get a token**:
+   - Sign up at https://www.mapbox.com/ (free tier available)
+   - Go to your account settings → Access tokens
+   - Copy your default public token or create a new one
+
+2. **Add to `.env` file**:
+   ```bash
+   VITE_MAPBOX_TOKEN=pk.eyJ1Ijoi...your_actual_token_here
+   ```
+
+3. **Important**: After adding/changing the token in `.env`, you **must rebuild** the frontend:
+   ```bash
+   docker compose build frontend
+   docker compose up -d
+   ```
+   
+   > **Why rebuild?** Vite environment variables (prefixed with `VITE_`) are embedded into the JavaScript bundle at **build time**, not runtime. Simply restarting the container won't pick up token changes.
 
 ## 📋 Docker Commands
 
@@ -321,6 +337,11 @@ docker stats solar_analyzer_api
 4. **Check Mapbox token**:
    - Ensure `VITE_MAPBOX_TOKEN` is set in `.env`
    - Token must be valid and active
+   - **If you just added/changed the token**: You must rebuild the frontend container:
+     ```bash
+     docker compose build frontend
+     docker compose up -d frontend
+     ```
 
 ### Database Connection Issues
 

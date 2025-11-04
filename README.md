@@ -51,9 +51,10 @@ A comprehensive full-stack application for analyzing and managing solar panel in
 git clone <repository-url>
 cd solar_site_analyzer
 
-# Configure environment
+# Configure environment (REQUIRED)
 cp .env.example .env
-nano .env  # Add your Mapbox token
+nano .env  # Add your Mapbox token (get free token from mapbox.com)
+# Set: VITE_MAPBOX_TOKEN=pk.eyJ1Ijoi...your_token_here
 
 # Start all services
 docker-compose up -d
@@ -70,6 +71,49 @@ docker-compose up -d
 - ✅ Starts all services
 
 📖 **Full Docker Guide**: [README_DOCKER.md](./README_DOCKER.md)
+
+## 🔐 Environment Configuration
+
+### Required Setup
+
+Create a `.env` file from the template:
+
+```bash
+cp .env.example .env
+```
+
+### Important Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_MAPBOX_TOKEN` | **Yes** | Your Mapbox access token (get free at [mapbox.com](https://mapbox.com)) |
+| `DB_PASSWORD` | Yes | Database password |
+| `VITE_API_BASE_URL` | No | API endpoint (default: `http://localhost:8000`) |
+| `REDIS_ENABLED` | No | Enable caching (default: `True`) |
+
+### Security Best Practices
+
+✅ **DO**:
+- Keep `.env` file in your `.gitignore` (already configured)
+- Use strong passwords in production
+- Get your own Mapbox token (free tier available)
+- Share `.env.example` in repository (template only)
+
+❌ **DON'T**:
+- Never commit `.env` file to Git
+- Don't hardcode tokens in `docker-compose.yml` for public repos
+- Don't share your `.env` file or tokens publicly
+
+### Rebuild After Token Changes
+
+If you update `VITE_MAPBOX_TOKEN` in `.env` after initial build:
+
+```bash
+docker compose build frontend  # Rebuild with new token
+docker compose up -d            # Restart services
+```
+
+> **Why?** Vite environment variables are embedded at build time, not runtime.
 
 ## 📦 Project Structure
 
@@ -274,35 +318,3 @@ npm run test
 # Type checking
 npm run type-check
 ```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Frontend can't connect to API**:
-- Check if backend is running: `curl http://localhost:8000/health`
-- Verify CORS settings in `backend/app/config.py`
-
-**Database connection failed**:
-- Ensure MySQL is running
-- Check credentials in `.env`
-- Verify database exists: `mysql -u root -p -e "SHOW DATABASES;"`
-
-**Map not loading**:
-- Add valid Mapbox token to `.env`
-- Check browser console for errors
-
-**Redis cache not working**:
-- Redis is optional; app works without it
-- Set `REDIS_ENABLED=False` to disable
-
-## 📈 Future Enhancements
-
-- [ ] ML-based score prediction
-- [ ] Weather data integration
-- [ ] Cost-benefit analysis module
-- [ ] Multi-user authentication
-- [ ] Admin dashboard
-- [ ] Mobile app (React Native)
-- [ ] Real-time collaboration
-- [ ] Advanced analytics dashboard
