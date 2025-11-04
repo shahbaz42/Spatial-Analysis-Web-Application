@@ -135,10 +135,10 @@ Sites are color-coded based on their suitability scores:
 
 The frontend communicates with the backend API at the following endpoints:
 
-- `GET /api/v1/sites` - Fetch sites with optional filters
-- `GET /api/v1/sites/{id}` - Get detailed site information
-- `POST /api/v1/analyze` - Recalculate scores with custom weights
-- `GET /api/v1/statistics` - Get summary statistics
+- `GET /api/sites` - Fetch sites with optional filters
+- `GET /api/sites/{id}` - Get detailed site information
+- `POST /api/analyze` - Recalculate scores with custom weights
+- `GET /api/statistics` - Get summary statistics
 
 ## 🎨 Technology Stack
 
@@ -227,10 +227,6 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-## 📄 License
-
-This project is part of the Solar Site Analyzer system.
-
 ## 👨‍💻 Development
 
 ### Code Style
@@ -254,15 +250,3 @@ git commit -m "feat: add your feature description"
 # Push and create PR
 git push origin feature/your-feature-name
 ```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## 📞 Support
-
-For issues, questions, or contributions, please open an issue in the repository.
