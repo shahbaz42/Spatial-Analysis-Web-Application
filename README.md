@@ -3,9 +3,9 @@
 
 A comprehensive full-stack application for analyzing and managing solar panel installation site suitability using spatial data analysis, machine learning scoring, and interactive visualization.
 
-https://github.com/user-attachments/assets/88327cab-2d2a-472a-8db5-51c90ea5c80f
+https://github.com/user-attachments/assets/05569657-46b5-40c4-8d5c-c751015ca36e
 
-<img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/c682d798-8206-4ae7-97bb-9ebd1e8054e2" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/54df2824-a473-44bb-a94f-0b404d5e1007" />
 <img width="1920" height="1042" alt="image" src="https://github.com/user-attachments/assets/2c537218-78d0-451f-8188-b95a6ae0fa5a" />
 <img width="400" height="873" alt="image" src="https://github.com/user-attachments/assets/6b26618a-2ec6-47c1-819c-6ddbaaf1d326" />
 <img width="402" height="877" alt="image" src="https://github.com/user-attachments/assets/948836ad-3f2a-487e-9c30-cae948ea3581" />
@@ -337,3 +337,9 @@ npm run test
 # Type checking
 npm run type-check
 ```
+
+## Things to improve
+* Sites need to be dynamically fetched based on region, i.e. where user is zoomed in
+* UI for selecting weights needs to be more user friendly
+* Authentication, and project based access, ability to save reports.
+* Theming system, dark mode and light mode.
