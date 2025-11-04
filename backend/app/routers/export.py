@@ -30,6 +30,12 @@ async def export_sites(
         le=100,
         description="Minimum suitability score filter"
     ),
+    max_score: Optional[float] = Query(
+        None,
+        ge=0,
+        le=100,
+        description="Maximum suitability score filter"
+    ),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -38,6 +44,7 @@ async def export_sites(
     **Query Parameters:**
     - **format**: Output format - 'csv' or 'json' (default: json)
     - **min_score**: Minimum suitability score filter (optional)
+    - **max_score**: Maximum suitability score filter (optional)
     
     **Returns:**
     - CSV file download (if format=csv)
@@ -53,7 +60,8 @@ async def export_sites(
     try:
         sites_data = await SiteService.export_sites(
             db=db,
-            min_score=min_score
+            min_score=min_score,
+            max_score=max_score
         )
         
         if format == "csv":
