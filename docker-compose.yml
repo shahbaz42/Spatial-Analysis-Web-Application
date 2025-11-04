@@ -5,6 +5,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: solar_analyzer_db
+    command: --log-bin-trust-function-creators=1
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpassword}
       MYSQL_DATABASE: ${DB_NAME:-solar_site_analyzer}
