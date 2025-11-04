@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import mapboxgl from 'mapbox-gl';
 import { Plus, Minus, Home, X } from 'lucide-vue-next';
 import { useSiteStore } from '@/stores/siteStore';

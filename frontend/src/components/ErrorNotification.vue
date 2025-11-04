@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from 'vue';
+import { watch } from 'vue';
 import { AlertCircle, X } from 'lucide-vue-next';
 import { useSiteStore } from '@/stores/siteStore';
 
