@@ -352,6 +352,13 @@ gunicorn app.main:app \
 | DB_NAME | Database name | solar_site_analyzer |
 | DEBUG | Enable debug mode | False |
 | CORS_ORIGINS | Allowed CORS origins | * |
+| REDIS_HOST | Redis host | localhost |
+| REDIS_PORT | Redis port | 6379 |
+| REDIS_DB | Redis database | 0 |
+| REDIS_PASSWORD | Redis password | - |
+| REDIS_ENABLED | Enable Redis caching | True |
+| REDIS_TTL | Redis cache TTL (seconds) | 300 |
+| REDIS_MAX_CONNECTIONS | Redis max connections | 10 |
 
 ## Error Handling
 
